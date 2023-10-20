@@ -212,6 +212,8 @@ public class Application implements Serializable {
 
   private Boolean probing = false;
 
+  private Integer probeRetryCount = 0;
+
   /** running job */
   private transient JobsOverview.Task overview;
 
@@ -271,6 +273,7 @@ public class Application implements Serializable {
   public void setState(Integer state) {
     this.state = state;
     this.tracking = shouldTracking() ? 1 : 0;
+    this.probeRetryCount = FlinkAppStateEnum.isLost(state) ? this.probeRetryCount : 0;
   }
 
   public void setYarnQueueByHotParams() {

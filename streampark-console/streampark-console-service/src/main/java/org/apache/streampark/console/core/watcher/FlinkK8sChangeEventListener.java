@@ -107,15 +107,10 @@ public class FlinkK8sChangeEventListener {
     // email alerts when necessary
     FlinkAppStateEnum state = app.getStateEnum();
     if (FlinkAppStateEnum.FAILED == state
-        || FlinkAppStateEnum.LOST == state
         || FlinkAppStateEnum.RESTARTING == state
         || FlinkAppStateEnum.FINISHED == state) {
       executor.execute(
           () -> {
-            if (app.getProbing()) {
-              log.info("application with id {} is probing, don't send alert", app.getId());
-              return;
-            }
             alertService.alert(app.getAlertId(), AlertTemplate.of(app, state));
           });
     }

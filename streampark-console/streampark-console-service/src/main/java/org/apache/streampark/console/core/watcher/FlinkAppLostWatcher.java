@@ -60,14 +60,9 @@ public class FlinkAppLostWatcher {
   /** probe wait interval every 5 seconds */
   private static final Duration PROBE_WAIT_INTERVAL = Duration.ofSeconds(5);
 
-  /** probe failed retry count */
-  private static final Short PROBE_RETRY_COUNT = 10;
-
   private long lastWatchTime = 0L;
 
   private final AtomicBoolean isProbing = new AtomicBoolean(false);
-
-  private Short retryAttempts = PROBE_RETRY_COUNT;
 
   @Scheduled(fixedDelay = 1000)
   private void start() {
@@ -96,6 +91,11 @@ public class FlinkAppLostWatcher {
     probeApplication =
         probeApplication.stream()
             .filter(application -> FlinkAppStateEnum.isLost(application.getState()))
+            .map(
+                application -> {
+                  application.setProbeRetryCount(application.getProbeRetryCount() + 1);
+                  return application;
+                })
             .collect(Collectors.toList());
     updateState(probeApplication);
     probeApplication.stream().forEach(this::monitorApplication);
@@ -128,9 +128,9 @@ public class FlinkAppLostWatcher {
         application -> {
           application.setProbing(false);
           application.setTracking(0);
+          application.setProbeRetryCount(0);
         });
     applicationManageService.updateBatchById(applications);
-    retryAttempts = PROBE_RETRY_COUNT;
     isProbing.set(false);
   }
 
@@ -175,7 +175,6 @@ public class FlinkAppLostWatcher {
   }
 
   private Boolean shouldRetry(List<Application> applications) {
-    return applications.stream().anyMatch(application -> application.getStateEnum() == LOST)
-        && (retryAttempts-- > 0);
+    return applications.stream().anyMatch(application -> application.getStateEnum() == LOST);
   }
 }

@@ -145,6 +145,11 @@ public enum FlinkAppStateEnum {
     return FlinkAppStateEnum.LOST == flinkAppStateEnum;
   }
 
+  public static boolean isRunning(Integer appState) {
+    FlinkAppStateEnum flinkAppStateEnum = FlinkAppStateEnum.of(appState);
+    return FlinkAppStateEnum.RUNNING == flinkAppStateEnum;
+  }
+
   /**
    * Type conversion bridging Deprecated, see {@link
    * org.apache.streampark.console.core.utils.FlinkK8sDataTypeConverter}

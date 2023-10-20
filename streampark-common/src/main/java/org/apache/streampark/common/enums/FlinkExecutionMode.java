@@ -89,8 +89,16 @@ public enum FlinkExecutionMode {
     return YARN_PER_JOB == mode || YARN_APPLICATION == mode;
   }
 
+  public static boolean isYarnSessionOrRemote(Integer value) {
+    return isYarnSessionMode(value) || isRemoteMode(value);
+  }
+
   public static boolean isYarnSessionMode(FlinkExecutionMode mode) {
     return YARN_SESSION == mode;
+  }
+
+  public static boolean isYarnSessionMode(Integer value) {
+    return isYarnSessionMode(of(value));
   }
 
   public static boolean isYarnMode(Integer value) {

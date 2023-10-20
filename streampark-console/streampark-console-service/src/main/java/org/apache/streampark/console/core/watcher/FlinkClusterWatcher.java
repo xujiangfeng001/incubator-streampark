@@ -27,6 +27,7 @@ import org.apache.streampark.common.util.ThreadUtils;
 import org.apache.streampark.common.util.YarnUtils;
 import org.apache.streampark.console.base.util.JacksonUtils;
 import org.apache.streampark.console.core.bean.AlertTemplate;
+import org.apache.streampark.console.core.entity.Application;
 import org.apache.streampark.console.core.entity.FlinkCluster;
 import org.apache.streampark.console.core.metrics.flink.Overview;
 import org.apache.streampark.console.core.metrics.yarn.YarnAppInfo;
@@ -300,5 +301,16 @@ public class FlinkClusterWatcher {
   public Boolean verifyClusterConnection(FlinkCluster flinkCluster) {
     ClusterState clusterStateEnum = httpClusterState(flinkCluster);
     return ClusterState.isRunning(clusterStateEnum);
+  }
+
+  /** Probe cluster by application */
+  public void handleClusterProbe(Application application) {
+    FlinkCluster flinkCluster = flinkClusterService.getById(application.getFlinkClusterId());
+    if (ClusterState.isLost(flinkCluster.getClusterStateEnum())) {
+      flinkCluster.setClusterState(ClusterState.RUNNING.getState());
+      flinkClusterService.updateClusterState(
+          flinkCluster.getId(), flinkCluster.getClusterStateEnum());
+      addWatching(flinkCluster);
+    }
   }
 }

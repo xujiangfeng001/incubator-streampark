@@ -78,4 +78,8 @@ public enum ClusterState {
   public static boolean isRunning(ClusterState state) {
     return RUNNING.equals(state);
   }
+
+  public static boolean isLost(ClusterState state) {
+    return LOST.equals(state);
+  }
 }

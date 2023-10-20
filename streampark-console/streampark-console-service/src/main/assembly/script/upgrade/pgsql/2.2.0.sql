@@ -60,7 +60,8 @@ alter table "public"."t_flink_sql"
 add column "team_resource" varchar(64) default null;
 
 alter table "public"."t_flink_app"
-add column "probing" boolean default false;
+add column "probing" boolean default false,
+add column "probe_retry_count" int4 default 0;
 
 alter table "public"."t_flink_cluster"
 add column "job_manager_url" varchar(150) collate "pg_catalog"."default",

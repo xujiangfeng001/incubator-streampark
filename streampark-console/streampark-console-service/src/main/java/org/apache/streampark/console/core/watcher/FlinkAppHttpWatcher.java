@@ -360,8 +360,8 @@ public class FlinkAppHttpWatcher {
           application.setState(flinkAppStateEnum.getValue());
           cleanOptioning(optionStateEnum, application.getId());
           doPersistMetrics(application, true);
+          tryProbeFlinkCluster(application);
           if (FlinkAppStateEnum.FAILED == flinkAppStateEnum
-              || FlinkAppStateEnum.LOST == flinkAppStateEnum
               || (FlinkAppStateEnum.CANCELED == flinkAppStateEnum && stopFromEnum.isNone())
               || applicationInfoService.checkAlter(application)) {
             doAlert(application, flinkAppStateEnum);
@@ -394,7 +394,6 @@ public class FlinkAppHttpWatcher {
         if (stopFromEnum.isNone()) {
           savePointService.expire(application.getId());
           application.setState(FlinkAppStateEnum.LOST.getValue());
-          doAlert(application, FlinkAppStateEnum.LOST);
         } else {
           application.setState(FlinkAppStateEnum.CANCELED.getValue());
         }
@@ -408,15 +407,14 @@ public class FlinkAppHttpWatcher {
       cleanSavepoint(application);
       cleanOptioning(optionStateEnum, application.getId());
       doPersistMetrics(application, true);
+      tryProbeFlinkCluster(application);
       FlinkAppStateEnum appState = application.getStateEnum();
-      if (FlinkAppStateEnum.FAILED == appState || FlinkAppStateEnum.LOST == appState) {
+      if (FlinkAppStateEnum.FAILED == appState) {
         doAlert(application, application.getStateEnum());
-        if (FlinkAppStateEnum.FAILED == appState) {
-          try {
-            applicationActionService.start(application, true);
-          } catch (Exception e) {
-            log.error(e.getMessage(), e);
-          }
+        try {
+          applicationActionService.start(application, true);
+        } catch (Exception e) {
+          log.error(e.getMessage(), e);
         }
       }
     }
@@ -512,6 +510,7 @@ public class FlinkAppHttpWatcher {
     application.setState(currentState.getValue());
     doPersistMetrics(application, false);
     cleanOptioning(optionStateEnum, application.getId());
+    tryProbeFlinkCluster(application);
   }
 
   private void doPersistMetrics(Application application, boolean stopWatch) {
@@ -530,6 +529,22 @@ public class FlinkAppHttpWatcher {
       WATCHING_APPS.put(application.getId(), application);
     }
     applicationManageService.persistMetrics(application);
+  }
+
+  private void tryProbeFlinkCluster(Application application) {
+    if (!shouldProbeFlinkCluster(application)) {
+      return;
+    }
+    flinkClusterWatcher.handleClusterProbe(application);
+  }
+
+  private boolean shouldProbeFlinkCluster(Application application) {
+    boolean isProbing = !application.getProbing();
+    boolean isYarnOrRemoteMode =
+        FlinkExecutionMode.isYarnSessionOrRemote(application.getExecutionMode());
+    boolean isNotRunning = !FlinkAppStateEnum.isRunning(application.getState());
+
+    return isProbing && isYarnOrRemoteMode && isNotRunning;
   }
 
   /**
@@ -822,10 +837,6 @@ public class FlinkAppHttpWatcher {
    * @param appState application state
    */
   private void doAlert(Application app, FlinkAppStateEnum appState) {
-    if (app.getProbing()) {
-      log.info("application with id {} is probing, don't send alert", app.getId());
-      return;
-    }
     switch (app.getFlinkExecutionMode()) {
       case YARN_APPLICATION:
       case YARN_PER_JOB:

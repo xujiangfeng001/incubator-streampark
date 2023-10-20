@@ -250,7 +250,8 @@ create table "public"."t_flink_app" (
   "ingress_template" text collate "pg_catalog"."default",
   "default_mode_ingress" text collate "pg_catalog"."default",
   "tags" varchar(500) collate "pg_catalog"."default",
-  "probing" boolean default false
+  "probing" boolean default false,
+  "probe_retry_count" int4 default 0
 )
 ;
 alter table "public"."t_flink_app" add constraint "t_flink_app_pkey" primary key ("id");
