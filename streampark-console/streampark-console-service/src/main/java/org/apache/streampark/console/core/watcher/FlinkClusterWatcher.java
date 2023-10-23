@@ -42,6 +42,7 @@ import org.apache.hc.client5.http.config.RequestConfig;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -62,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 /** This implementation is currently used for tracing Cluster on yarn,remote,K8s mode */
 @Slf4j
 @Component
+@Data
 public class FlinkClusterWatcher {
 
   @Autowired private FlinkClusterService flinkClusterService;

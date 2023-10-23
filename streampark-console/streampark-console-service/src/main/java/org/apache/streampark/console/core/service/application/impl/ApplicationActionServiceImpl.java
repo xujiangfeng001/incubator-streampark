@@ -102,6 +102,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
@@ -222,6 +223,22 @@ public class ApplicationActionServiceImpl extends ServiceImpl<ApplicationMapper,
     if (startFuture == null && cancelFuture == null) {
       this.updateToStopped(appParam);
     }
+  }
+
+  @Override
+  public void probe(Long teamId) {
+    List<Application> applications = applicationManageService.getEscapeLostApps(teamId);
+    ApiAlertException.throwIfTrue(
+        applications.isEmpty(), "There are currently no applications that need to be probe");
+    applications.stream()
+        .forEach(
+            application -> {
+              application.setState(FlinkAppStateEnum.PROBING.getValue());
+              application.setProbing(true);
+              application.setTracking(1);
+              application.setProbeRetryCount(0);
+            });
+    applicationManageService.updateBatchById(applications);
   }
 
   @Override

@@ -436,4 +436,11 @@ public class ApplicationController {
     String resp = applicationInfoService.k8sStartLog(id, offset, limit);
     return RestResponse.success(resp);
   }
+
+  @Operation(summary = "Probe application with Lost status")
+  @PostMapping("probe")
+  public RestResponse probe(Long teamId) {
+    applicationActionService.probe(teamId);
+    return RestResponse.success();
+  }
 }

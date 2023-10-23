@@ -114,4 +114,11 @@ public class FlinkClusterController {
     flinkClusterService.delete(cluster);
     return RestResponse.success();
   }
+
+  @Operation(summary = "Probe flink cluster")
+  @PostMapping("probe")
+  public RestResponse probe(FlinkCluster cluster) {
+    flinkClusterService.probe(cluster);
+    return RestResponse.success();
+  }
 }

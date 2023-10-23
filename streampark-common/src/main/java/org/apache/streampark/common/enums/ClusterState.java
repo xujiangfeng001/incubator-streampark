@@ -45,7 +45,10 @@ public enum ClusterState {
   FAILED(7),
 
   /** cluster killed */
-  KILLED(8);
+  KILLED(8),
+
+  /** cluster probe */
+  PROBE(9);
 
   private final Integer state;
 
@@ -81,5 +84,9 @@ public enum ClusterState {
 
   public static boolean isLost(ClusterState state) {
     return LOST.equals(state);
+  }
+
+  public static boolean isLost(Integer value) {
+    return isLost(of(value));
   }
 }

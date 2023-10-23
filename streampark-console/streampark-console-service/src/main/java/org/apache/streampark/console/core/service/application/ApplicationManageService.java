@@ -171,4 +171,12 @@ public interface ApplicationManageService extends IService<Application> {
    * @return a list of applications be probing or need to probe.
    */
   List<Application> getProbeApps();
+
+  /**
+   * Get a list of escape applications with LOST status
+   *
+   * @param teamId The ID of the team to filter by
+   * @return A list of escape applications with LOST status
+   */
+  List<Application> getEscapeLostApps(Long teamId);
 }

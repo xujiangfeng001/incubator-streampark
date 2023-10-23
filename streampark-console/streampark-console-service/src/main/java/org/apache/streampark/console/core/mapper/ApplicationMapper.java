@@ -39,6 +39,8 @@ public interface ApplicationMapper extends BaseMapper<Application> {
 
   List<Application> getProbeApps();
 
+  List<Application> getEscapeLostApps(@Param("teamId") Long teamId);
+
   boolean mapping(@Param("app") Application appParam);
 
   List<String> getRecentK8sNamespace(@Param("limitSize") Integer limit);

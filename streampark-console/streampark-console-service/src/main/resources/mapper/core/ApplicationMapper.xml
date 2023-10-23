@@ -268,7 +268,17 @@
         from t_flink_app t
         inner join t_user u
         on t.user_id = u.user_id
-        where t.probing = 1 or (t.tracking = 1 and t.state = 13 and t.probe_retry_count &lt; 10)
+        where t.probing = 1
+        or (t.tracking = 1 and t.state = 13 and t.probe_retry_count &lt; 10)
+    </select>
+
+    <select id="getEscapeLostApps" resultType="org.apache.streampark.console.core.entity.Application">
+        select
+            *,
+        from t_flink_app
+        where team_id=#{teamId}
+        and probing = 0
+        and (tracking = 0 and state = 13 and t.probe_retry_count >= 10)
     </select>
 
     <update id="mapping" parameterType="org.apache.streampark.console.core.entity.Application">

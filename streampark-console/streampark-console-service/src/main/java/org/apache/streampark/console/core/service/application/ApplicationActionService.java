@@ -67,4 +67,11 @@ public interface ApplicationActionService extends IService<Application> {
    * @param appParam the application to be stopped
    */
   void forcedStop(Application appParam);
+
+  /**
+   * Probe escape applications with LOST status
+   *
+   * @param teamId The ID of the team to filter by
+   */
+  void probe(Long teamId);
 }

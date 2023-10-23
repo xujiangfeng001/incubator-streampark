@@ -712,6 +712,11 @@ public class ApplicationManageServiceImpl extends ServiceImpl<ApplicationMapper,
   }
 
   @Override
+  public List<Application> getEscapeLostApps(Long teamId) {
+    return this.baseMapper.getEscapeLostApps(teamId);
+  }
+
+  @Override
   public boolean checkBuildAndUpdate(Application appParam) {
     boolean build = appParam.getBuild();
     if (!build) {

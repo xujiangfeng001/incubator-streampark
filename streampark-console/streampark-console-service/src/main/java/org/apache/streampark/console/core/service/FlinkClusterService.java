@@ -52,4 +52,6 @@ public interface FlinkClusterService extends IService<FlinkCluster> {
   List<FlinkCluster> getByExecutionModes(Collection<FlinkExecutionMode> executionModeEnums);
 
   void updateClusterState(Long id, ClusterState state);
+
+  void probe(FlinkCluster flinkCluster);
 }

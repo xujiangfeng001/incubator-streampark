@@ -341,6 +341,20 @@ public class FlinkClusterServiceImpl extends ServiceImpl<FlinkClusterMapper, Fli
   }
 
   @Override
+  public void probe(FlinkCluster cluster) {
+    FlinkCluster flinkCluster = getById(cluster);
+    ApiAlertException.throwIfTrue(
+        ClusterState.isLost(flinkCluster.getClusterState()),
+        "Flink cluster state is not LOST, please check.");
+    ApiAlertException.throwIfTrue(
+        FlinkExecutionMode.isKubernetesSessionMode(flinkCluster.getClusterState()),
+        "K8s Session temporarily not supported probe.");
+    updateClusterState(flinkCluster.getId(), ClusterState.PROBE);
+    flinkClusterWatcher.setImmediateWatch(true);
+    FlinkClusterWatcher.addWatching(flinkCluster);
+  }
+
+  @Override
   public void delete(FlinkCluster cluster) {
     Long id = cluster.getId();
     FlinkCluster flinkCluster = getById(id);
