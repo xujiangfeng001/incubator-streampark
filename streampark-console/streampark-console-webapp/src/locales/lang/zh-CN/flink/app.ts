@@ -16,6 +16,7 @@
  */
 export default {
   id: '作业ID',
+  probe: '探活',
   appName: '作业名称',
   searchName: '作业名称',
   tags: '作业标签',

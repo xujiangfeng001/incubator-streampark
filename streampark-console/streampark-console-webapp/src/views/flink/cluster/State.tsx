@@ -43,6 +43,11 @@ const stateMap = {
   [ClusterStateEnum.KILLED]: { color: '#fa8c16', title: 'KILLED' },
   [ClusterStateEnum.LOST]: { color: '#99A3A4', title: 'LOST' },
   [ClusterStateEnum.UNKNOWN]: { color: '#000000', title: 'UNKNOWN' },
+  [ClusterStateEnum.PROBING]: {
+    color: '#2febc9',
+    title: 'PROBING',
+    class: 'status-processing-probing',
+  },
 };
 
 export default defineComponent({

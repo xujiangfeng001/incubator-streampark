@@ -16,6 +16,7 @@
  */
 export default {
   id: 'ID',
+  probe: 'PROBE',
   appName: 'Application Name',
   searchName: 'Name',
   tags: 'Tags',

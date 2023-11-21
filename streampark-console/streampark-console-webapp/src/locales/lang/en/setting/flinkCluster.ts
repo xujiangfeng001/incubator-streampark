@@ -20,6 +20,7 @@ export default {
   stop: 'Stop Cluster',
   start: 'Start Cluster',
   edit: 'Edit Cluster',
+  probe: 'Probe Cluster',
   delete: 'Are you sure delete this cluster ?',
   form: {
     clusterName: 'Cluster Name',

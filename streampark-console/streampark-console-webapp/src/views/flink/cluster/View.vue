@@ -35,14 +35,16 @@
     PlayCircleOutlined,
     EditOutlined,
     DeleteOutlined,
+    ApiOutlined,
   } from '@ant-design/icons-vue';
   import { useMessage } from '/@/hooks/web/useMessage';
   import {
+    fetchClusterProbe,
     fetchClusterRemove,
     fetchClusterShutdown,
     fetchClusterStart,
     fetchFlinkCluster,
-  } from '/@/api/flink/flinkCluster';
+  } from "/@/api/flink/flinkCluster";
   import { FlinkCluster } from '/@/api/flink/flinkCluster.type';
   import { useGo } from '/@/hooks/web/usePage';
   import { useI18n } from '/@/hooks/web/useI18n';
@@ -60,6 +62,10 @@
   const loading = ref(false);
   function handleIsStart(item) {
     return item.clusterState === ClusterStateEnum.RUNNING;
+  }
+
+  function handleIsLost(item) {
+    return item.clusterState === ClusterStateEnum.LOST;
   }
 
   /* Go to edit cluster */
@@ -91,6 +97,15 @@
     await fetchClusterRemove(item.id);
     await getFlinkCluster();
     createMessage.success('The current cluster is remove');
+  }
+  /* probe */
+  async function handleProbe(item: FlinkCluster) {
+    try {
+      await fetchClusterProbe(item.id);
+      createMessage.success('The current cluster is probe');
+    } catch (error) {
+      console.error(error);
+    }
   }
   /* shutdown */
   async function handleShutdownCluster(item: FlinkCluster) {
@@ -244,6 +259,18 @@
                 </a-button>
               </Tooltip>
             </template>
+            <Tooltip :title="t('setting.flinkCluster.probe')">
+              <a-button
+                v-auth="'cluster:probe'"
+                :disabled="handleIsLost(item)"
+                @click="handleProbe(item)"
+                shape="circle"
+                size="large"
+                class="control-button"
+              >
+                <ApiOutlined />
+              </a-button>
+            </Tooltip>
             <Tooltip :title="t('setting.flinkCluster.detail')">
               <a-button
                 :disabled="!handleIsStart(item)"

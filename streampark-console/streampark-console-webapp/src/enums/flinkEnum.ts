@@ -153,6 +153,7 @@ export enum ClusterStateEnum {
   CANCELLING = 6,
   FAILED = 7,
   KILLED = 8,
+  PROBING = 9,
 }
 
 export enum AppTypeEnum {

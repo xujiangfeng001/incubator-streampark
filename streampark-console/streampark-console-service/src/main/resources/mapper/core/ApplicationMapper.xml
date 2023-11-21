@@ -274,11 +274,11 @@
 
     <select id="getEscapeLostApps" resultType="org.apache.streampark.console.core.entity.Application">
         select
-            *,
+            *
         from t_flink_app
         where team_id=#{teamId}
         and probing = 0
-        and (tracking = 0 and state = 13 and t.probe_retry_count >= 10)
+        and (tracking = 0 and state = 13 and probe_retry_count >= 10)
     </select>
 
     <update id="mapping" parameterType="org.apache.streampark.console.core.entity.Application">

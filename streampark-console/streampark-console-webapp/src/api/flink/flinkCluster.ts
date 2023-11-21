@@ -29,6 +29,7 @@ enum FLINK_API {
   START = '/flink/cluster/start',
   SHUTDOWN = '/flink/cluster/shutdown',
   DELETE = '/flink/cluster/delete',
+  PROBE = '/flink/cluster/probe',
 }
 /**
  * flink cluster
@@ -45,6 +46,13 @@ export function fetchFlinkCluster() {
  */
 export function fetchClusterStart(id: string): Promise<AxiosResponse<Result>> {
   return defHttp.post({ url: FLINK_API.START, data: { id } }, { isReturnNativeResponse: true });
+}
+/**
+ * flink cluster probe
+ * @returns {Promise<AxiosResponse<Result>>}
+ */
+export function fetchClusterProbe(id: string): Promise<AxiosResponse<Result>> {
+  return defHttp.post({ url: FLINK_API.PROBE, data: { id } }, { isReturnNativeResponse: true });
 }
 /**
  * flink cluster remove

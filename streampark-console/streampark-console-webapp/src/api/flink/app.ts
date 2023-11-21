@@ -50,6 +50,7 @@ enum APP_API {
   CHECK_JAR = '/flink/app/checkjar',
   VERIFY_SCHEMA = '/flink/app/verifySchema',
   CHECK_SAVEPOINT_PATH = '/flink/app/checkSavepointPath',
+  PROBE = '/flink/app/probe',
 }
 
 /**
@@ -87,6 +88,10 @@ export function fetchAppRecord(data): Promise<AppListResponse> {
  */
 export function fetchAppRemove(id: string): Promise<boolean> {
   return defHttp.post({ url: APP_API.DELETE, data: { id } });
+}
+
+export function probeApp(): Promise<boolean> {
+  return defHttp.post({ url: APP_API.PROBE});
 }
 
 export function fetchRemoveBackup(id: string): Promise<boolean> {

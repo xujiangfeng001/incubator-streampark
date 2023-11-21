@@ -19,7 +19,7 @@ import { useRouter } from 'vue-router';
 import { handleIsStart } from '../utils';
 import { useFlinkAppStore } from '/@/store/modules/flinkApplication';
 import { useFlinkApplication } from './useApp';
-import { fetchAppRecord, fetchAppRemove } from '/@/api/flink/app';
+import { fetchAppRecord, fetchAppRemove, probeApp } from "/@/api/flink/app";
 import { AppListRecord } from '/@/api/flink/app.type';
 import { ActionItem, FormProps } from '/@/components/Table';
 import { useMessage } from '/@/hooks/web/useMessage';
@@ -264,8 +264,8 @@ export const useAppTableAction = (
 
   const formConfig = computed((): Partial<FormProps> => {
     const tableFormConfig: FormProps = {
-      baseColProps: { span: 5, style: { paddingRight: '20px' } },
-      actionColOptions: { span: 4 },
+      baseColProps: { span: 4, style: { paddingRight: '20px' } },
+      actionColOptions: { span: 7 },
       showSubmitButton: false,
       showResetButton: false,
       async resetFunc() {
@@ -331,6 +331,21 @@ export const useAppTableAction = (
           color: 'primary',
           preIcon: 'ant-design:plus-outlined',
         },
+        showSubmitButton: true,
+        submitButtonOptions: {
+          text: t('flink.app.probe'),
+          color: 'primary',
+          // preIcon: 'ant-design:plus-outlined',
+        },
+        submitFunc:async ()=> {
+          try {
+            await probeApp();
+            createMessage.success('probe successful');
+            handlePageDataReload(false);
+          } catch (e) {
+            console.error(e)
+          }
+        }
       });
     }
     return tableFormConfig;
